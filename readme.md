@@ -19,5 +19,5 @@ gulp
 Run local serve with BrowserSync (automatic)
 
 ```
-gulp serve
+gulp watch
 ```
