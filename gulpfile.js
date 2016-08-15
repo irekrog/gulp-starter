@@ -15,15 +15,16 @@ var path = {
     },
 
     output: {
-        css: "css/",
-        js: "js/"
+        css: "./build/css/",
+        js: "./build/js/"
     }
 };
 
 var config = {
     sourcemaps: true,
     notify: false,
-    cssCompress: "compressed"
+    cssCompress: "compressed",
+    jsCompress: true
 };
 
 gulp.task("sass", function () {
@@ -44,33 +45,25 @@ gulp.task("sass", function () {
 gulp.task("scripts", function () {
    return gulp.src(path.input.scripts)
         .pipe(concat('script.min.js'))
-        .pipe(uglify())
+        .pipe(gulpif(config.jsCompress, uglify())
             .on('error', function (e) {
                 console.log(e.error);
-            })
+            }))
         .pipe(gulp.dest(path.output.js))
         .pipe(browserSync.stream())
         .pipe(gulpif(config.notify,notify({message: 'Scripts compiled'})));
 
 });
 
-gulp.task('browser-sync', function() {
-    browserSync.init({
-        server: {
-            baseDir: "./"
-        }
-    });
-});
-
 gulp.task('watch', ['sass', 'scripts'], function() {
 
     browserSync.init({
-        server: "./"
+        server: "./build"
     });
 
     gulp.watch(path.input.sass, ['sass']);
     gulp.watch(path.input.scripts, ['scripts']);
-    gulp.watch("./*.html").on('change', browserSync.reload);
+    gulp.watch("./build/*.html").on('change', browserSync.reload);
 
 });
 

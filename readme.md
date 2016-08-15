@@ -1,6 +1,6 @@
 # gulp-starter
  
-Gulp starter to build web pages. Contains: compile sass to css, minify and concatenate JavaScript files, BrowserSync.
+Gulp starter (sass, minify, concatenate, watch, browsersync)
 
 ## How to use it
 
@@ -16,7 +16,7 @@ Run sass and js tasks
 gulp
 ```
 
-Run local serve with BrowserSync (automatic)
+Run local serve with BrowserSync
 
 ```
 gulp watch
