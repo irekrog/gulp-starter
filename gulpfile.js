@@ -6,31 +6,44 @@ var gulp = require("gulp"),
     autoprefixer = require('gulp-autoprefixer'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
+    pug = require('gulp-pug'),
+    babel = require('gulp-babel');
     browserSync = require('browser-sync').create();
 
 var path = {
     input: {
         sass: "./_src/sass/*.*",
-        scripts: "./_src/scripts/*.*"
+        scripts: "./_src/scripts/*.*",
+        pug: "./_src/*.*"
     },
 
     output: {
         css: "./build/css/",
-        js: "./build/js/"
+        js: "./build/js/",
+        html: "./build/"
     }
 };
 
 var config = {
     sourcemaps: true,
     notify: false,
-    cssCompress: "compressed",
-    jsCompress: true
+    cssMinify: "compressed",
+    jsMinify: true,
+    htmlMinify: true // true - disable minify, false - enable minify
 };
+
+gulp.task('html', function buildHTML() {
+  return gulp.src(path.input.pug)
+  .pipe(pug({
+    pretty: config.htmlMinify
+  }))
+  .pipe(gulp.dest(path.output.html))
+});
 
 gulp.task("sass", function () {
     return gulp.src(path.input.sass)
         .pipe(gulpif(config.sourcemaps, sourcemaps.init()))
-        .pipe(sass({outputStyle: config.cssCompress})
+        .pipe(sass({outputStyle: config.cssMinify})
             .on('error', sass.logError))
         .pipe(autoprefixer({
             browsers: ['last 2 version'],
@@ -44,8 +57,11 @@ gulp.task("sass", function () {
 
 gulp.task("scripts", function () {
    return gulp.src(path.input.scripts)
+        .pipe(babel({
+            presets: ['es2015']
+        }))
         .pipe(concat('script.min.js'))
-        .pipe(gulpif(config.jsCompress, uglify())
+        .pipe(gulpif(config.jsMinify, uglify())
             .on('error', function (e) {
                 console.log(e.error);
             }))
@@ -55,16 +71,17 @@ gulp.task("scripts", function () {
 
 });
 
-gulp.task('watch', ['sass', 'scripts'], function() {
+gulp.task('watch', function() {
 
     browserSync.init({
         server: "./build"
     });
 
+    gulp.watch(path.input.pug, ['html']);
     gulp.watch(path.input.sass, ['sass']);
     gulp.watch(path.input.scripts, ['scripts']);
     gulp.watch("./build/*.html").on('change', browserSync.reload);
 
 });
 
-gulp.task('default', ['sass', 'scripts']);
+gulp.task('default', ['html', 'sass', 'scripts']);
