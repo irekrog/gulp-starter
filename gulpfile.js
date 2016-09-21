@@ -8,6 +8,7 @@ var gulp = require("gulp"),
     uglify = require('gulp-uglify'),
     pug = require('gulp-pug'),
     babel = require('gulp-babel');
+    eslint = require('gulp-eslint'),
     browserSync = require('browser-sync').create();
 
 var path = {
@@ -31,6 +32,39 @@ var config = {
     jsMinify: true,
     htmlMinify: true // true - disable minify, false - enable minify
 };
+
+var eslintRules = {
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            "tab"
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "prefer-arrow-callback": 2,
+    		"prefer-const": 2,
+    		"no-var": 2,
+    		"object-shorthand": 2
+    }
+}
 
 gulp.task('html', function buildHTML() {
   return gulp.src(path.input.pug)
@@ -71,6 +105,13 @@ gulp.task("scripts", function () {
 
 });
 
+gulp.task('eslint', function() {
+    return gulp.src([path.input.scripts,'!node_modules/**']) 
+        .pipe(eslint(eslintRules))
+        .pipe(eslint.format()) 
+        .pipe(eslint.failAfterError());
+});
+
 gulp.task('watch', function() {
 
     browserSync.init({
@@ -79,9 +120,9 @@ gulp.task('watch', function() {
 
     gulp.watch(path.input.pug, ['html']);
     gulp.watch(path.input.sass, ['sass']);
-    gulp.watch(path.input.scripts, ['scripts']);
+    gulp.watch(path.input.scripts, ['scripts', 'eslint']);
     gulp.watch("./build/*.html").on('change', browserSync.reload);
 
 });
 
-gulp.task('default', ['html', 'sass', 'scripts']);
+gulp.task('default', ['html', 'sass', 'scripts', 'eslint']);
