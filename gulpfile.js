@@ -59,10 +59,15 @@ var eslintRules = {
             "error",
             "always"
         ],
+        "comma-spacing": [
+            "error", 
+            { "before": false, "after": true }
+        ],
         "prefer-arrow-callback": 2,
-    		"prefer-const": 2,
-    		"no-var": 2,
-    		"object-shorthand": 2
+		"prefer-const": 0,
+		"no-var": 2,
+		"object-shorthand": 2,
+        "no-template-curly-in-string": 2
     }
 }
 
