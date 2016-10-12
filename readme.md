@@ -5,9 +5,12 @@ Gulp starter (sass, minify, concatenate, watch, browsersync)
 ## How to use it
 
 Install packages:
+```
+npm install -g yarn
 
 ```
-npm install
+```
+yarn install
 ```
 
 Run sass and js tasks
