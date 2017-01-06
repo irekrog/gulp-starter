@@ -6,20 +6,20 @@ Gulp starter (sass, minify, concatenate, watch, browsersync)
 
 Install packages:
 ```
-npm install -g yarn
+npm i -g yarn
 
 ```
 ```
-yarn install
+yarn
 ```
 
-Run sass and js tasks
+Run a sass and js tasks
 
 ```
 gulp
 ```
 
-Run local serve with BrowserSync
+Run a local server with BrowserSync
 
 ```
 gulp watch
